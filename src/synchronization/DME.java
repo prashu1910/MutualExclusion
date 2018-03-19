@@ -10,9 +10,15 @@ import java.util.Queue;
 import msg.Msg;
 import util.Util;
 import connectivity.Linker;
+import java.io.UnsupportedEncodingException;
+import java.security.PrivateKey;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import msg.Converter;
 import org.json.simple.JSONObject;
+import security.KeyManagement;
+import security.Sign;
 
 /**
  *
@@ -24,10 +30,13 @@ public class DME extends Process implements Lock{
     int col;
     int row;
     boolean chCol;
+    PrivateKey privateKey;
     Queue<Integer> queue = new LinkedList<>();
-    public DME(Linker initComm, int coordinator) {
+    
+    public DME(Linker initComm, int coordinator, PrivateKey privateKey) {
         super(initComm);
         CsPermission = (myId == coordinator);
+        this.privateKey = privateKey;
     }
     public synchronized void initiate() {
         //if (CsPermission) sendToken();
@@ -79,7 +88,10 @@ public class DME extends Process implements Lock{
         map.put("colCounter", String.valueOf(col));
         map.put("chCol",String.valueOf(chCol));
         String token = Converter.jsonToString(Converter.toJson(null,map));
-        sendMsg(next, "token",token);
+        //System.out.println("token = " + token + " :: "+myId);
+        byte signature[] = Sign.sign(token, privateKey, "SHA256withRSA");
+        //System.out.println("signature = " + signature);
+        sendMsg(next, "token",token,signature);
     }
     public synchronized void handleMsg(Msg m, int src, String tag) {
         Util.println(m.getMessage() + " :: "+tag);
@@ -95,92 +107,108 @@ public class DME extends Process implements Lock{
         }
         else if(tag.equals("token"))
         {
-            JSONObject obj = Converter.stringToJson(m.getMessage());
-            col = Integer.parseInt(obj.get("colCounter").toString());
-            row = Integer.parseInt(obj.get("rowCounter").toString());
-            chCol = Boolean.valueOf(obj.get("chCol").toString());
-            //Token t = Token.getToken();
-            Util.println(col +" :: "+row);
-            if(col == 0)
+            //Util.println(m.getSignLength() + " :: "+m.getSignature());
+           // System.out.println("src = " + src);
+            byte[] signature = Base64.getDecoder().decode(m.getSignature());
+           // System.out.println("signature = " + Arrays.toString(signature));
+            //Util.println(m.getSignature().getBytes() + " :: "+m.getSignature().getBytes().length);
+            boolean isTrue = Sign.verify(m.getMessage().trim(), KeyManagement.getNodePublicKey("D://sync1/key/"+src, "RSA"), "SHA256withRSA", signature);
+        //System.out.println("isTrue = " + (isTrue?"true hai" : "false hai"));
+            if(isTrue)
+                System.out.println("finally");
+            else
+                System.out.println("still not done");
+            if(isTrue)
             {
-                row++;
-                if(row == Math.sqrt(N))
+                JSONObject obj = Converter.stringToJson(m.getMessage());
+                col = Integer.parseInt(obj.get("colCounter").toString());
+                row = Integer.parseInt(obj.get("rowCounter").toString());
+                chCol = Boolean.valueOf(obj.get("chCol").toString());
+                //Token t = Token.getToken();
+                Util.println(col +" :: "+row);
+                if(col == 0)
                 {
-                    chCol = true;
-                    col = -1;
-                    sendToken("right");// send to right neighbor
-                }
-                else if(queue.isEmpty())
-                {
-                    sendToken("down");// send to right neighbor
-                }
-                else
-                {
-                    col = 1;
-                    if(queue.contains(myId))
+                    row++;
+                    if(row == Math.sqrt(N))
                     {
-                        CsPermission = true;
-                        notify();
-                    }
-                    else
-                    {
-                      while(!queue.isEmpty())
-                        queue.poll();
-                       sendToken("right");// send to right neighbor
-                    }
-                }
-            }
-            else if(col > 0)
-            {
-                col++;
-                if(queue.contains(myId))
-                {
-                    CsPermission = true;
-                    notify();
-                }
-                else
-                {
-                   while(!queue.isEmpty())
-                        queue.poll();
-                   if(col == Math.sqrt(N))
-                   {
-                       col = 0;
-                       sendToken("down");// send to right neighbor
-                   }
-                   else
-                   {
-                      sendToken("right");// send to right neighbor
-                   }
-                }
-            }
-            else if(col == -1)
-            {
-                chCol = false;
-                row = 1;
-                if(queue.isEmpty())
-                {
-                    col = 0;
-                    System.out.println("queue is empty first if sending token to down");
-                    sendToken("down");// send to down neighbor
-                }
-                else
-                {
-                    col = 1;
-                    if(queue.contains(myId))
-                    {
-                        System.out.println("queue contains me and going to execute cs");
-                        CsPermission = true;
-                        notify();
-                    }
-                    else
-                    {
-                        System.out.println("going to empty queue and sending token to right");
-                        while(!queue.isEmpty())
-                        queue.poll();
+                        chCol = true;
+                        col = -1;
                         sendToken("right");// send to right neighbor
                     }
+                    else if(queue.isEmpty())
+                    {
+                        sendToken("down");// send to right neighbor
+                    }
+                    else
+                    {
+                        col = 1;
+                        if(queue.contains(myId))
+                        {
+                            CsPermission = true;
+                            notify();
+                        }
+                        else
+                        {
+                          while(!queue.isEmpty())
+                            queue.poll();
+                           sendToken("right");// send to right neighbor
+                        }
+                    }
+                }
+                else if(col > 0)
+                {
+                    col++;
+                    if(queue.contains(myId))
+                    {
+                        CsPermission = true;
+                        notify();
+                    }
+                    else
+                    {
+                       while(!queue.isEmpty())
+                            queue.poll();
+                       if(col == Math.sqrt(N))
+                       {
+                           col = 0;
+                           sendToken("down");// send to right neighbor
+                       }
+                       else
+                       {
+                          sendToken("right");// send to right neighbor
+                       }
+                    }
+                }
+                else if(col == -1)
+                {
+                    chCol = false;
+                    row = 1;
+                    if(queue.isEmpty())
+                    {
+                        col = 0;
+                        System.out.println("queue is empty first if sending token to down");
+                        sendToken("down");// send to down neighbor
+                    }
+                    else
+                    {
+                        col = 1;
+                        if(queue.contains(myId))
+                        {
+                            System.out.println("queue contains me and going to execute cs");
+                            CsPermission = true;
+                            notify();
+                        }
+                        else
+                        {
+                            System.out.println("going to empty queue and sending token to right");
+                            while(!queue.isEmpty())
+                            queue.poll();
+                            sendToken("right");// send to right neighbor
+                        }
+                    }
                 }
             }
+            else
+                System.out.println("Saale kutte intruder .. bada aaya tha intrude karne");
         }
     }
     

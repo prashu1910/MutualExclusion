@@ -9,6 +9,7 @@ import connectivity.Linker;
 import msg.Msg;
 import msg.MsgHandler;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  *
@@ -36,6 +37,12 @@ public class Process implements MsgHandler
     {
         //Util.println("Sending msg to " + destId + ":" +tag + " " + msg);
         comm.sendMsg(destId, tag, msg);
+    }
+    public void sendMsg(int destId, String tag, String msg, byte[] signature)  
+    {
+        //Util.println("Sending msg to " + destId + ":" +tag + " " + msg);
+        
+        comm.sendMsg(destId, tag, msg,signature);
     }
     public void sendMsg(int destId, String tag, int msg) 
     {

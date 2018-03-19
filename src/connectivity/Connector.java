@@ -27,7 +27,7 @@ public class Connector {
     {
         Name myNameclient = new Name();
         link = new Socket[numProc];
-        int localport = port > 0?  getLocalPort(myId): port;
+        int localport = port > 0?  port : getLocalPort(myId);
         listener = new ServerSocket(localport);
         
         /* register in the name server */

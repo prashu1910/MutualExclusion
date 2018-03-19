@@ -25,6 +25,8 @@ public class Client {
     public static void sendMsg(Socket s, String msg) throws IOException
     {
         DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+        
+        
         PrintWriter out = new PrintWriter(dos, true);
         //byte[] buffer = msg.getBytes();
         out.println(msg);

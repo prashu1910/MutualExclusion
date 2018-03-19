@@ -9,6 +9,9 @@ import msg.Msg;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
@@ -41,7 +44,21 @@ public class Linker
     {     
         dataOut[destId].println(myId + " " + destId + " " + tag + " " + msg + "#");
         dataOut[destId].flush();
+       
     }
+    
+    public void sendMsg(int destId, String tag, String msg, byte[] sign) 
+    {
+       int length = sign.length;
+      // String signatsure = Arrays.toString(sign);
+       // System.out.println("Array signatsure = " + signatsure);
+       String signature = Base64.getEncoder().encodeToString(sign);
+       //String signature = new String(encode, "UTF-8");
+       // System.out.println("signature send= " + signature);
+       dataOut[destId].println(myId + " " + destId + " " + tag + " " + msg + "#"+ length + " " + signature +"#");
+       dataOut[destId].flush();
+    }
+    
     public void sendMsg(int destId, String tag) 
     {
         sendMsg(destId, tag, " 0 ");
@@ -58,11 +75,24 @@ public class Linker
         String getline = dataIn[fromId].readLine();
        // Util.println(" received message " + getline);
         StringTokenizer st = new StringTokenizer(getline);
-        int srcId = Integer.parseInt(st.nextToken());
-        int destId = Integer.parseInt(st.nextToken());
-        String tag = st.nextToken();
+        int srcId = Integer.parseInt(st.nextToken().trim());
+        int destId = Integer.parseInt(st.nextToken().trim());
+        String tag = st.nextToken().trim();
         String msg = st.nextToken("#");
-        return new Msg(srcId, destId, tag, msg);        
+        int signLength = 0;
+        String signature = null;
+        if(st.hasMoreTokens())
+        {
+            signLength = Integer.parseInt(st.nextToken(" ").trim().substring(1));
+        }
+            
+        if(st.hasMoreTokens())
+        {
+            signature = st.nextToken("#").trim();
+           // System.out.println("signature received = " + signature);
+        }
+            
+        return new Msg(srcId, destId, tag, msg, signLength, signature);        
     }
     public int getMyId() 
     { 

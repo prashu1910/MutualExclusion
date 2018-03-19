@@ -17,13 +17,41 @@ public class Msg
     int destId;
     String tag;
     String message;
+    int signLength;
+    String signature;
+
+    public int getDestId() {
+        return destId;
+    }
+
+    public void setDestId(int destId) {
+        this.destId = destId;
+    }
+
+    public int getSignLength() {
+        return signLength;
+    }
+
+    public void setSignLength(int signLength) {
+        this.signLength = signLength;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
     
-    public Msg(int srcId, int destId, String tag, String message)    
+    public Msg(int srcId, int destId, String tag, String message, int signLength, String signature)    
     {
         this.srcId = srcId;
         this.destId = destId;
         this.tag = tag;
         this.message = message;
+        this.signLength = signLength;
+        this.signature = signature;
     }
 
     public int getSrcId() 
@@ -77,12 +105,12 @@ public class Msg
         return String.valueOf(srcId) + " " + String.valueOf(destId) + " " + tag + " " +message + "#";
     }
     
-    public static Msg parseMsg(StringTokenizer st)
+    /*public static Msg parseMsg(StringTokenizer st)
     {
         int srcId = Integer.parseInt(st.nextToken());
         int destId = Integer.parseInt(st.nextToken());
         String tag = st.nextToken();
         String message = st.nextToken("#");
         return new Msg(srcId, destId, tag, message);
-    }
+    }*/
 }
