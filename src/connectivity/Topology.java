@@ -22,7 +22,7 @@ public class Topology {
         Util.println("Reading topology");
         try {
             BufferedReader dIn = new BufferedReader(
-				new FileReader("D:/sync/tp" + myId+".txt"));
+				new FileReader("D:/sync1/tp" + myId+".txt"));
             StringTokenizer st = new StringTokenizer(dIn.readLine());
             while (st.hasMoreTokens()) {
                 int neighbor = Integer.parseInt(st.nextToken());

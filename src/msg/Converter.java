@@ -51,13 +51,9 @@ public class Converter {
         return obj;
     }
     
-    public static JSONObject createJsonForToken(Token t)
+    /*public static JSONObject createJsonForToken(Token t)
     {
         JSONObject obj = new JSONObject();
-        HashMap<String,String> map = new HashMap<>();
-        map.put("rowCounter", String.valueOf(t.getRowCounter()));
-        map.put("colCounter", String.valueOf(t.getColCounter()));
-        map.put("chCol",String.valueOf(t.isChCol()));
         return toJson(obj, map);
-    }
+    }*/
 }

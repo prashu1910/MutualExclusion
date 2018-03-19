@@ -10,13 +10,20 @@ import java.util.Queue;
 import msg.Msg;
 import util.Util;
 import connectivity.Linker;
+import java.util.HashMap;
+import msg.Converter;
+import org.json.simple.JSONObject;
 
 /**
  *
  * @author Prashu
  */
 public class DME extends Process implements Lock{
+    
     boolean CsPermission = false;
+    int col;
+    int row;
+    boolean chCol;
     Queue<Integer> queue = new LinkedList<>();
     public DME(Linker initComm, int coordinator) {
         super(initComm);
@@ -48,9 +55,9 @@ public class DME extends Process implements Lock{
         while(!queue.isEmpty())
             queue.poll();
         Token t = Token.getToken();
-        if(t.getColCounter() == Math.sqrt(N))
+        if(col == Math.sqrt(N))
         {
-            t.setColCounter(0);
+            col = 0;
             sendToken("down");
         }
         else
@@ -66,7 +73,13 @@ public class DME extends Process implements Lock{
         else
             next = (int)this.comm.neighbors.get(0);
         Util.println("Process " + myId + " has sent the token to "+next);
-        sendMsg(next, "token");
+        
+        HashMap<String,String> map = new HashMap<>();
+        map.put("rowCounter", String.valueOf(row));
+        map.put("colCounter", String.valueOf(col));
+        map.put("chCol",String.valueOf(chCol));
+        String token = Converter.jsonToString(Converter.toJson(null,map));
+        sendMsg(next, "token",token);
     }
     public synchronized void handleMsg(Msg m, int src, String tag) {
         Util.println(m.getMessage() + " :: "+tag);
@@ -82,15 +95,19 @@ public class DME extends Process implements Lock{
         }
         else if(tag.equals("token"))
         {
-            Token t = Token.getToken();
-            Util.println(t.getColCounter() +" :: "+t.getRowCounter());
-            if(t.getColCounter() == 0)
+            JSONObject obj = Converter.stringToJson(m.getMessage());
+            col = Integer.parseInt(obj.get("colCounter").toString());
+            row = Integer.parseInt(obj.get("rowCounter").toString());
+            chCol = Boolean.valueOf(obj.get("chCol").toString());
+            //Token t = Token.getToken();
+            Util.println(col +" :: "+row);
+            if(col == 0)
             {
-                t.setRowCounter(t.getRowCounter()+1);
-                if(t.getRowCounter() == Math.sqrt(N))
+                row++;
+                if(row == Math.sqrt(N))
                 {
-                    t.setChCol(true);
-                    t.setColCounter(-1);
+                    chCol = true;
+                    col = -1;
                     sendToken("right");// send to right neighbor
                 }
                 else if(queue.isEmpty())
@@ -99,7 +116,7 @@ public class DME extends Process implements Lock{
                 }
                 else
                 {
-                    t.setColCounter(1);
+                    col = 1;
                     if(queue.contains(myId))
                     {
                         CsPermission = true;
@@ -113,9 +130,9 @@ public class DME extends Process implements Lock{
                     }
                 }
             }
-            else if(t.getColCounter() > 0)
+            else if(col > 0)
             {
-                t.setColCounter(t.getColCounter()+1);
+                col++;
                 if(queue.contains(myId))
                 {
                     CsPermission = true;
@@ -125,9 +142,9 @@ public class DME extends Process implements Lock{
                 {
                    while(!queue.isEmpty())
                         queue.poll();
-                   if(t.getColCounter() == Math.sqrt(N))
+                   if(col == Math.sqrt(N))
                    {
-                       t.setColCounter(0);
+                       col = 0;
                        sendToken("down");// send to right neighbor
                    }
                    else
@@ -136,19 +153,19 @@ public class DME extends Process implements Lock{
                    }
                 }
             }
-            else if(t.getColCounter() == -1)
+            else if(col == -1)
             {
-                t.setChCol(false);
-                t.setRowCounter(1);
+                chCol = false;
+                row = 1;
                 if(queue.isEmpty())
                 {
-                    t.setColCounter(0);
+                    col = 0;
                     System.out.println("queue is empty first if sending token to down");
                     sendToken("down");// send to down neighbor
                 }
                 else
                 {
-                    t.setColCounter(1);
+                    col = 1;
                     if(queue.contains(myId))
                     {
                         System.out.println("queue contains me and going to execute cs");

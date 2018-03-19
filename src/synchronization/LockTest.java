@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.Socket;
 import msg.MsgHandler;
 import connectivity.Linker;
+import filehandler.Client;
 import util.Util;
 
 /**
@@ -54,10 +55,10 @@ public class LockTest {
     
     public static void executeCS() throws IOException
     {
-        Socket s = FileClient.getConnection("127.0.0.1", 13267);
-        String message = "D:\\sync\\resource.txt"+"#"+"Message send from process "+myId;
-        FileClient.sendMsg(s, message);
-        FileClient.closeSocket(s);
+        Socket s = Client.getConnection("127.0.0.1", 13267);
+        String message = "D:\\sync1\\resource.txt"+"#"+"Message send from process "+myId;
+        Client.sendMsg(s, message);
+        Client.closeSocket(s);
     }
 }
 
