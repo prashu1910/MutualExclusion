@@ -6,12 +6,15 @@
 package connectivity;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.PortAddr;
 import util.Symbols;
 /**
@@ -79,6 +82,16 @@ public class Connector {
             listener.close();
             for (int i=0;i<link.length; i++) 
                 link[i].close();
-        } catch (Exception e) {System.err.println(e);}
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+    public void closeSocket(int processID)
+    {
+        try {
+            link[processID].close();
+        } catch (IOException ex) {
+           System.out.println("socket closed for "+processID);
+        }
     }
 }
