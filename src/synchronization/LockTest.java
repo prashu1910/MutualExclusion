@@ -29,13 +29,10 @@ public class LockTest {
             int numProc = Integer.parseInt(args[3]);
             boolean run = Boolean.parseBoolean(args[4]);
             KeyManagement.generateKeys("D://sync1/key/"+myId,"D://sync1/"+myId);
-            //System.out.println("lock = " + KeyManagement.getOwnPrivateKey("D://sync1/"+myId, "RSA"));
-            //System.out.println("lock 2  = " + KeyManagement.getNodePublicKey("D://sync1/key/"+myId, "RSA"));
             System.out.println(run);
             comm = new Linker(baseName, myId, port, numProc);
             Lock lock = null;
-            
-            lock = new DME(comm,0,KeyManagement.getOwnPrivateKey("D://sync1/"+myId, "RSA"));
+            lock = new DME(comm,0,KeyManagement.getOwnPrivateKey("D://sync1/"+myId, KeyManagement.ALGORITHM));
             for (int i = 0; i < numProc; i++)
                if (i != myId)
                   (new ListenerThread(i, (MsgHandler)lock)).start();

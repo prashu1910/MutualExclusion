@@ -17,6 +17,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import msg.Converter;
 import org.json.simple.JSONObject;
+import security.CipherManagement;
 import security.KeyManagement;
 import security.Sign;
 
@@ -88,8 +89,9 @@ public class DME extends Process implements Lock{
         map.put("colCounter", String.valueOf(col));
         map.put("chCol",String.valueOf(chCol));
         String token = Converter.jsonToString(Converter.toJson(null,map));
+        token = CipherManagement.encrypt(token, KeyManagement.getNodePublicKey("D://sync1/key/"+next, KeyManagement.ALGORITHM));
         //System.out.println("token = " + token + " :: "+myId);
-        byte signature[] = Sign.sign(token, privateKey, "SHA256withRSA");
+        byte signature[] = Sign.sign(token, privateKey, Sign.ALGORITHM);
         //System.out.println("signature = " + signature);
         sendMsg(next, "token",token,signature);
     }
@@ -112,7 +114,7 @@ public class DME extends Process implements Lock{
             byte[] signature = Base64.getDecoder().decode(m.getSignature());
            // System.out.println("signature = " + Arrays.toString(signature));
             //Util.println(m.getSignature().getBytes() + " :: "+m.getSignature().getBytes().length);
-            boolean isTrue = Sign.verify(m.getMessage().trim(), KeyManagement.getNodePublicKey("D://sync1/key/"+src, "RSA"), "SHA256withRSA", signature);
+            boolean isTrue = Sign.verify(m.getMessage().trim(), KeyManagement.getNodePublicKey("D://sync1/key/"+src, KeyManagement.ALGORITHM), Sign.ALGORITHM, signature);
         //System.out.println("isTrue = " + (isTrue?"true hai" : "false hai"));
             if(isTrue)
                 System.out.println("finally");
@@ -120,7 +122,9 @@ public class DME extends Process implements Lock{
                 System.out.println("still not done");
             if(isTrue)
             {
-                JSONObject obj = Converter.stringToJson(m.getMessage());
+                String message = CipherManagement.decrypt(m.getMessage().trim(), KeyManagement.getOwnPrivateKey("D://sync1/"+myId, KeyManagement.ALGORITHM));
+                System.out.println("message after decrypt " + message);
+                JSONObject obj = Converter.stringToJson(message);
                 col = Integer.parseInt(obj.get("colCounter").toString());
                 row = Integer.parseInt(obj.get("rowCounter").toString());
                 chCol = Boolean.valueOf(obj.get("chCol").toString());

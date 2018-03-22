@@ -17,6 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -28,14 +29,16 @@ import java.util.logging.Logger;
  * @author Prashu
  */
 public class KeyManagement {
+    
+    public static final String ALGORITHM = "RSA";
     private KeyPairGenerator keyGen;
 	private KeyPair pair;
 	private PrivateKey privateKey;
 	private PublicKey publicKey;
 
 	public KeyManagement(int keylength) throws NoSuchAlgorithmException, NoSuchProviderException {
-		this.keyGen = KeyPairGenerator.getInstance("RSA");
-		this.keyGen.initialize(keylength);
+		this.keyGen = KeyPairGenerator.getInstance(ALGORITHM);
+		this.keyGen.initialize(keylength,new SecureRandom());
 	}
 
 	public void createKeys() {
@@ -68,7 +71,7 @@ public class KeyManagement {
             KeyManagement gk;
 		try 
                 {
-                    gk = new KeyManagement(1024);
+                    gk = new KeyManagement(2048);
                     gk.createKeys();
                     //System.out.println("gk = " + gk.getPublicKey());
                    // System.out.println("gk 2  = " + gk.getPrivateKey() );

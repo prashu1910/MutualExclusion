@@ -17,11 +17,11 @@ import security.Sign;
 public class TestSignature {
     public static void main(String[] args) {
         String message = "Hello";
-        PrivateKey privateKey = KeyManagement.getOwnPrivateKey("D://sync1/0", "RSA");
-        byte signature[] = Sign.sign(message, privateKey, "SHA256withRSA");
+        PrivateKey privateKey = KeyManagement.getOwnPrivateKey("D://sync1/0", KeyManagement.ALGORITHM);
+        byte signature[] = Sign.sign(message, privateKey, Sign.ALGORITHM);
         
-        PublicKey publicKey = KeyManagement.getNodePublicKey("D://sync1/key/0", "RSA");
-        boolean isTrue = Sign.verify(message, publicKey, "SHA256withRSA", signature);
+        PublicKey publicKey = KeyManagement.getNodePublicKey("D://sync1/key/0", KeyManagement.ALGORITHM);
+        boolean isTrue = Sign.verify(message, publicKey, Sign.ALGORITHM, signature);
         if(isTrue)
             System.out.println("chal raha hai = ");
         else

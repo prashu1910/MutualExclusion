@@ -67,6 +67,7 @@ public class Connector {
             dataOut[i].println(myId +" "+ i +" "+ "hello" + " " + "null");
             dataOut[i].flush();
         }
+        
     }
     int getLocalPort(int id) 
     { 

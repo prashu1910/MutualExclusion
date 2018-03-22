@@ -20,11 +20,13 @@ import java.security.SignatureException;
  */
 public class Sign {
     
+    public static final String ALGORITHM  = "SHA256withRSA";
+    
     public static byte[] sign(String msg, PrivateKey privateKey, String signAlgo)
     {
         Signature sign = null;
         try {
-            sign = Signature.getInstance("SHA256withRSA");
+            sign = Signature.getInstance(ALGORITHM);
             sign.initSign(privateKey);
             sign.update(msg.getBytes());
             return sign.sign();
