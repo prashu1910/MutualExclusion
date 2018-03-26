@@ -5,53 +5,80 @@
  */
 package synchronization;
 
+import java.util.HashSet;
+
 /**
  *
  * @author Prashu
  */
 public class Token {
     
-    private int rowCounter = 1;
+    /*private int rowCounter = 1;
     private int colCounter = 0;
     private boolean chCol = false;
-    private static Token token = null;
+    private static Token token = null;*/
     
-    
-    private Token()
+    int process;
+    HashSet<Integer> processSet = new HashSet<>();
+    int count;
+    String tokenMovement = "down";
+
+    public String getTokenMovement() {
+        return tokenMovement;
+    }
+
+    public void setTokenMovement(String tokenMovement) {
+        this.tokenMovement = tokenMovement;
+    }
+    public Token()
     {
         
     }
-    
-    public int getRowCounter() {
-        return rowCounter;
-    }
-
-    public void setRowCounter(int rowCounter) {
-        this.rowCounter = rowCounter;
-    }
-
-    public int getColCounter() {
-        return colCounter;
-    }
-
-    public void setColCounter(int colCounter) {
-        this.colCounter = colCounter;
-    }
-
-    public boolean isChCol() {
-        return chCol;
-    }
-
-    public void setChCol(boolean chCol) {
-        this.chCol = chCol;
-    }
-    public static Token getToken()
+    public Token(Token t)
     {
-        if(token == null)
-        {
-            token = new Token();
-        }
-        return token;
+        this.count = t.count;
+        this.process = t.process;
     }
+    
+    /*public static Token getToken(Token t)
+    {
+        return new Token
+    }*/
+    public Token(int process, HashSet<Integer> hash, int count, String tokenMovement) {
+        this.process = process;
+        this.processSet = hash;
+        this.count = count;
+        this.tokenMovement = tokenMovement;
+    }
+
+    public int getProcess() {
+        return process;
+    }
+
+    public void setProcess(int process) {
+        this.process = process;
+    }
+
+    public HashSet<Integer> getProcessSet() {
+        return processSet;
+    }
+
+    public void setProcessSet(HashSet<Integer> hash) {
+        this.processSet = hash;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+    
+    public String toString()
+    {
+        return process+" "+count + " "+ tokenMovement+" "+processSet;
+    }
+   
 }
 

@@ -28,10 +28,10 @@ public class Name {
                     new InputStreamReader(server.getInputStream()));
         pout = new PrintStream(server.getOutputStream());
     }
-    public int insertName(String name, String hname, int portnum)
+    public int insertName(String name, String hname, int portnum, int id)
             throws IOException {
         getSocket();
-        pout.println("insert " + name + " " + hname + " " + portnum);
+        pout.println("insert " + name + " " + hname + " " + portnum + " "+id);
         pout.flush();
         return Integer.parseInt(din.readLine());
     }
@@ -44,5 +44,14 @@ public class Name {
         int portnum = Integer.parseInt(st.nextToken());
         String hname = st.nextToken();
         return new PortAddr(hname, portnum);
+    }
+    
+    public void removeName(int id) throws IOException
+    {
+        getSocket();
+        pout.println("remove " + id);
+        pout.flush();
+        //String result = din.readLine();
+        
     }
 }

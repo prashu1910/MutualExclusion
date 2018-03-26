@@ -17,8 +17,8 @@ import java.io.UnsupportedEncodingException;
  */
 public class Process implements MsgHandler 
 {
-    int N, myId;
-    Linker comm;
+    static int N, myId;
+    static Linker comm;
 
     public Process(Linker initComm) 
     {
@@ -78,8 +78,8 @@ public class Process implements MsgHandler
         try {
             return comm.receiveMsg(fromId);
         } catch (IOException e){
-            System.out.println(e);
-            comm.close();
+            System.out.println("Exception in process:: because of "+fromId + " :: " +e);
+            comm.close(fromId);
             return null;
         }
     }

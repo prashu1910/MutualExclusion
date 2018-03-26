@@ -16,15 +16,15 @@ import security.Sign;
  */
 public class TestSignature {
     public static void main(String[] args) {
-        String message = "Hello";
-        PrivateKey privateKey = KeyManagement.getOwnPrivateKey("D://sync1/0", KeyManagement.ALGORITHM);
+       /* String message = "Hello";
+        PrivateKey privateKey = KeyManagement.getOwnPrivateKey(path+"/0", KeyManagement.ALGORITHM);
         byte signature[] = Sign.sign(message, privateKey, Sign.ALGORITHM);
         
-        PublicKey publicKey = KeyManagement.getNodePublicKey("D://sync1/key/0", KeyManagement.ALGORITHM);
+        PublicKey publicKey = KeyManagement.getNodePublicKey(path+"/key/0", KeyManagement.ALGORITHM);
         boolean isTrue = Sign.verify(message, publicKey, Sign.ALGORITHM, signature);
         if(isTrue)
             System.out.println("chal raha hai = ");
         else
-            System.out.println("nahi chala");
+            System.out.println("nahi chala");*/
     }
 }

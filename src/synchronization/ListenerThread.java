@@ -16,7 +16,7 @@ import java.io.IOException;
 public class ListenerThread extends Thread{
     int channel;
     MsgHandler process;
-    
+    private volatile boolean running = true;
     public ListenerThread(int channel, MsgHandler process)
     {
         this.channel = channel;
@@ -25,16 +25,22 @@ public class ListenerThread extends Thread{
     
     public void run()
     {
-        while(true)
+        while(running)
         {
             try
             {
                 Msg message = process.receiveMsg(channel);
+                if(message == null)
+                    throw new NullPointerException();
                 process.handleMsg(message, message.getSrcId(), message.getTag());
             }
-            catch(IOException ex)
+            catch(Exception ex)
             {
-                System.err.println(ex);
+                //System.err.println(ex);
+                /*System.out.println("Exception in listenerthread " +channel );
+                ex.printStackTrace();*/
+                running = false;
+                
             }
         }
     }

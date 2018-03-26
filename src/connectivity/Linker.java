@@ -10,10 +10,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
+import synchronization.DME;
 
 /**
  *
@@ -105,5 +107,13 @@ public class Linker
     public void close() 
     {
         connector.closeSockets();
+        
     }
+    public void close(int processId)
+    {
+        connector.closeSocket(processId);
+        DME.changeNeighbour(processId);
+    }
+    
+    
 }

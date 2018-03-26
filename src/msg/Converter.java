@@ -5,12 +5,13 @@
  */
 package msg;
 
+
+
 import java.util.HashMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import synchronization.Token;
 
 /**
  *
@@ -56,4 +57,8 @@ public class Converter {
         JSONObject obj = new JSONObject();
         return toJson(obj, map);
     }*/
+    
+    
+   
+    
 }

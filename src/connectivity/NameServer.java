@@ -11,7 +11,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.Symbols;
 /**
  *
@@ -21,6 +24,24 @@ public class NameServer {
     NameTable table;
     public NameServer() {
         table = new NameTable();
+        /*new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true)
+                {
+                    try {
+                        ArrayList<Url> list = table.getAllData();
+                        for(Url u : list)
+                            System.out.println(u);
+                        Thread.sleep(10000);
+                    }
+                    //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                    catch (InterruptedException ex) {
+                        Logger.getLogger(NameServer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }).start();*/
     }
     void handleclient(Socket theClient) {
         try {
@@ -40,9 +61,15 @@ public class NameServer {
                 String name = st.nextToken();
                 String hostName = st.nextToken();
                 int port = Integer.parseInt(st.nextToken());
-                int retValue = table.insert(name, hostName, port);
+                int id = Integer.parseInt(st.nextToken());
+                int retValue = table.insert(name, hostName, port, id);
                 System.out.println("node added:: "+hostName + "@"+name+":"+port);
                 pout.println(retValue);
+            }
+            else if(tag.equals("remove"))
+            {
+                int id = Integer.parseInt(st.nextToken());
+                table.remove(id);
             }
             pout.flush();
         } catch (IOException e) {
