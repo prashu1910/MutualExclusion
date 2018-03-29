@@ -9,7 +9,7 @@ import connectivity.Linker;
 import msg.Msg;
 import msg.MsgHandler;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import util.Util;
 
 /**
  *
@@ -31,7 +31,7 @@ public class Process implements MsgHandler
     @Override
     public synchronized void handleMsg(Msg m, int src, String tag) 
     {
-        //System.out.println(" Message:: "+m.getMessage() + " :: "+m.getTag());
+        //Util.println(" Message:: "+m.getMessage() + " :: "+m.getTag());
     }
     public void sendMsg(int destId, String tag, String msg) 
     {
@@ -78,7 +78,7 @@ public class Process implements MsgHandler
         try {
             return comm.receiveMsg(fromId);
         } catch (IOException e){
-            System.out.println("Exception in process:: because of "+fromId + " :: " +e);
+            Util.println("Exception in process:: because of "+fromId + " :: " +e);
             comm.close(fromId);
             return null;
         }

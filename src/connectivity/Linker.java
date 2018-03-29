@@ -9,13 +9,12 @@ import msg.Msg;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 import synchronization.DME;
+import synchronization.Lock;
+import util.Util;
 
 /**
  *
@@ -23,24 +22,35 @@ import synchronization.DME;
  */
 public class Linker 
 {
-    PrintWriter[] dataOut;
-    BufferedReader[] dataIn;
-    BufferedReader dIn;
-    int myId, N;
-    Connector connector;
-    public LinkedList<Integer> neighbors = new LinkedList<>();
+    PrintWriter[]               dataOut;
+    BufferedReader[]            dataIn;
+    BufferedReader              dIn;
+    int                         myId, N;
+    Connector                   connector;
+    Lock                        process;
+    public LinkedList<Integer>  neighbors = new LinkedList<>();
+    public static final int     RIGHT     = 0;
+    public static final int     DOWN      = 1;
+    public static final int     TOP       = 2;
+    public static final int     LEFT      = 3;
     
-    public Linker(String basename, int id, int port, int numProc) throws Exception 
+    public void setProcess(Lock process) {
+        this.process = process;
+        connector.setProcess(process);
+    }
+    
+    
+    public Linker(String basename, int id, int port, int numProc, boolean isRestarted) throws Exception 
     {
         myId = id;
         N = numProc;
         dataIn = new BufferedReader[numProc];
         dataOut = new PrintWriter[numProc];
         Topology.readNeighbors(myId, N, neighbors);
-        //System.out.println("creating connector");
+       // Util.println("creating connector");
         connector = new Connector();
-        connector.Connect(basename, myId, port, numProc, dataIn, dataOut);
-        //System.out.println("connector created and connect");
+        connector.Connect(basename, myId, port, numProc, dataIn, dataOut, isRestarted);
+      //  Util.println("connector created and connect");
     }
     public void sendMsg(int destId, String tag, String msg) 
     {     
@@ -53,10 +63,10 @@ public class Linker
     {
        int length = sign.length;
       // String signatsure = Arrays.toString(sign);
-       // System.out.println("Array signatsure = " + signatsure);
+       // Util.println("Array signatsure = " + signatsure);
        String signature = Base64.getEncoder().encodeToString(sign);
        //String signature = new String(encode, "UTF-8");
-       // System.out.println("signature send= " + signature);
+       // Util.println("signature send= " + signature);
        dataOut[destId].println(myId + " " + destId + " " + tag + " " + msg + "#"+ length + " " + signature +"#");
        dataOut[destId].flush();
     }
@@ -91,7 +101,7 @@ public class Linker
         if(st.hasMoreTokens())
         {
             signature = st.nextToken("#").trim();
-           // System.out.println("signature received = " + signature);
+           // Util.println("signature received = " + signature);
         }
             
         return new Msg(srcId, destId, tag, msg, signLength, signature);        
@@ -112,7 +122,7 @@ public class Linker
     public void close(int processId)
     {
         connector.closeSocket(processId);
-        DME.changeNeighbour(processId);
+       ((DME)process).changeNeighbour(processId);
     }
     
     

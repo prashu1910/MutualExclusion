@@ -22,8 +22,8 @@ public class Name {
     BufferedReader din;
     PrintStream pout;
     public void getSocket() throws IOException {
-        Socket server = new Socket(Symbols.nameServer, 
-                                                Symbols.ServerPort);
+        Socket server = new Socket(Symbols.NAMESERVER, 
+                                                Symbols.SERVERPORT);
         din = new BufferedReader(
                     new InputStreamReader(server.getInputStream()));
         pout = new PrintStream(server.getOutputStream());

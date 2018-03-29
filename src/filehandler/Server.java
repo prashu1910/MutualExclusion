@@ -16,13 +16,14 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.StringTokenizer;
+import util.Util;
 
 /**
  *
  * @author Prashu
  */
 public class Server {
-    
+ /*   
 public final static int SOCKET_PORT = 13267;
     
     public static void main(String[] args) throws IOException {
@@ -39,28 +40,28 @@ public final static int SOCKET_PORT = 13267;
             servsock = new ServerSocket(SOCKET_PORT);
             while (true) 
             {
-                System.out.println("Waiting...");
+                Util.println("Waiting...");
                 try 
                 {
                     sock = servsock.accept();
-                    System.out.println("Accepted connection : " + sock);
+                    Util.println("Accepted connection : " + sock);
                     DataInputStream dis = new DataInputStream(sock.getInputStream());
                     byte[] buffer = new byte[4096];
                     int read = dis.read(buffer, 0,4096);
-                    System.out.println("read = " + read);
+                    Util.println("read = " + read);
                     String data = new String(buffer,0,read);
-                    System.out.println("data = " + data);
+                    Util.println("data = " + data);
                     StringTokenizer st = new StringTokenizer(data, "#");
                     String fileName = st.nextToken();
-                    System.out.println("fileName = " + fileName);
+                    Util.println("fileName = " + fileName);
                     fw = new FileWriter(fileName, true);
                     String d = st.nextToken();
-                    System.out.println("d = " + d);
+                    Util.println("d = " + d);
                     bw = new BufferedWriter(fw);
                     out = new PrintWriter(bw);
                     out.print(d);
                     out.close();
-                    System.out.println("Done.");
+                    Util.println("Done.");
                 }
                 finally 
                 {
@@ -79,7 +80,7 @@ public final static int SOCKET_PORT = 13267;
                 
             }
         }
-    }
+    }*/
     
     
 }

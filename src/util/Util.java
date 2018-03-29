@@ -5,13 +5,18 @@
  */
 package util;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
+import synchronization.LockTest;
 
 /**
  *
  * @author Prashu
  */
 public class Util {
+    static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
      public static void mySleep(int time) {
         try {
             Thread.sleep(time);
@@ -54,10 +59,13 @@ public class Util {
             if (A[i] == x) return i;
         return -1;
     }
-    public static void println(String s){
-        if (Symbols.debugFlag) {
-            System.out.println(s);
+    public static synchronized  void println(String s){
+       /* if (Symbols.debugFlag) {
+            Util.println(s);
             System.out.flush();
-        }
+        }*/
+       // LockTest.LOGGER.info(s);
+       LocalDateTime now = LocalDateTime.now();
+        System.out.println(now + ": "+s);
     }
 }

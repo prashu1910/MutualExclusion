@@ -7,7 +7,7 @@ package synchronization;
 
 import msg.Msg;
 import msg.MsgHandler;
-import java.io.IOException;
+import util.Util;
 
 /**
  *
@@ -37,8 +37,8 @@ public class ListenerThread extends Thread{
             catch(Exception ex)
             {
                 //System.err.println(ex);
-                /*System.out.println("Exception in listenerthread " +channel );
-                ex.printStackTrace();*/
+                Util.println("Exception in listenerthread " +channel );
+                ex.printStackTrace();
                 running = false;
                 
             }

@@ -40,7 +40,7 @@ public class Sign {
     {
         try
         {
-            //System.out.println("sigbytes = " + sigbytes);
+            //Util.println("sigbytes = " + sigbytes);
             Signature sig = Signature.getInstance(sigAlg);
             sig.initVerify(pubKey);
             sig.update(message.getBytes());

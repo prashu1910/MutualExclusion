@@ -23,8 +23,8 @@ public class TestSignature {
         PublicKey publicKey = KeyManagement.getNodePublicKey(path+"/key/0", KeyManagement.ALGORITHM);
         boolean isTrue = Sign.verify(message, publicKey, Sign.ALGORITHM, signature);
         if(isTrue)
-            System.out.println("chal raha hai = ");
+            Util.println("chal raha hai = ");
         else
-            System.out.println("nahi chala");*/
+            Util.println("nahi chala");*/
     }
 }

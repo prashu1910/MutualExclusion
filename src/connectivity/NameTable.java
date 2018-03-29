@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author Prashu
  */
-class Url
+/*class Url
 {
     String name;
     String host;
@@ -47,9 +47,9 @@ class Url
     {
         return name + " " + host + " " + " " + port + " " + id;
     }
-}
+}*/
 public class NameTable {
-    private final ArrayList<Url> url = new ArrayList<>();
+  /*  private final ArrayList<Url> url = new ArrayList<>();
     
     int search(String s) {
         for (int i = 0; i < url.size(); i++)
@@ -94,5 +94,5 @@ public class NameTable {
     public ArrayList<Url> getAllData()
     {
         return url;
-    }
+    }*/
 }

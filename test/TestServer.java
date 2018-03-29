@@ -1,5 +1,4 @@
 
-import static filehandler.Server.SOCKET_PORT;
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -10,7 +9,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.StringTokenizer;
+import util.Util;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -37,19 +36,19 @@ public class TestServer {
             servsock = new ServerSocket(1202);
             while (true) 
             {
-                System.out.println("Waiting...");
+                Util.println("Waiting...");
                 try 
                 {
                     sock = servsock.accept();
-                    System.out.println("Accepted connection : " + sock);
+                    Util.println("Accepted connection : " + sock);
                     DataInputStream dis = new DataInputStream(sock.getInputStream());
                     byte[] buffer = new byte[4096];
                     
                     int read = dis.read(buffer, 0,4096);
-                    System.out.println("read = " + read);
+                    Util.println("read = " + read);
                     String data = new String(buffer,0,read);
-                    System.out.println("data = " + data);
-                    System.out.println("Done.");
+                    Util.println("data = " + data);
+                    Util.println("Done.");
                 }
                 finally 
                 {

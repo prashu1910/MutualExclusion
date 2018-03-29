@@ -73,8 +73,8 @@ public class KeyManagement {
                 {
                     gk = new KeyManagement(2048);
                     gk.createKeys();
-                    //System.out.println("gk = " + gk.getPublicKey());
-                   // System.out.println("gk 2  = " + gk.getPrivateKey() );
+                    //Util.println("gk = " + gk.getPublicKey());
+                   // Util.println("gk 2  = " + gk.getPrivateKey() );
                     X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(gk.getPublicKey().getEncoded());
                     File dir = new File(publicKeyFolder);
                     dir.mkdirs();
